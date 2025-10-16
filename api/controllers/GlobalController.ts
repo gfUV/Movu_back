@@ -19,7 +19,7 @@ export interface IDao<T> {
  * It uses a Data Access Object (DAO) passed in the constructor to perform database actions.
  */
 export default class GlobalController<T> {
-  private dao: IDao<T>;
+  protected dao: IDao<T>;
 
   /**
    * Creates an instance of GlobalController.

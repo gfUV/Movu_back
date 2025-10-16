@@ -1,7 +1,7 @@
 import { Router } from "express";
 import userRoutes from "./userRoutes";
-//import sessionRoutes from "./session";
-//import passwordRoutes from "./passwordRoutes";
+import sessionRoutes from "./sessionRoutes";
+import passwordRoutes from "./passwordRoutes";
 
 /**
  * Main API router.
@@ -21,7 +21,7 @@ import userRoutes from "./userRoutes";
 const router: Router = Router();
 
 router.use("/users", userRoutes);
-//router.use("/sessions", sessionRoutes);
-//router.use("/auth", passwordRoutes);
+router.use("/sessions", sessionRoutes);
+router.use("/auth", passwordRoutes);
 
 export default router;
