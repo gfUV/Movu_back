@@ -5,6 +5,6 @@ declare namespace NodeJS {
     PORT: string;
     ORIGIN: string;
     EMAIL_USER: string;
-    EMAIL_PASS: string;
+    SENDGRID_API_KEY: string;
   }
 }
