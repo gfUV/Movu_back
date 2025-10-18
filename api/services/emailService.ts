@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 /**
- * Interface for the email sending options.
+ * Interface for email options.
  */
 export interface IEmailOptions {
   to: string;
@@ -13,35 +13,22 @@ export interface IEmailOptions {
 }
 
 /**
- * Create the Nodemailer transporter using SendGrid SMTP.
+ * Create the Nodemailer transporter using Gmail SMTP.
+ * Make sure to use an App Password, not your normal Gmail password.
  */
 const transporter: Transporter = nodemailer.createTransport({
-  host: "smtp.sendgrid.net",
-  port: 587,
+  service: "gmail",
   auth: {
-    user: "apikey", // This must be the literal string "apikey" when using SendGrid
-    pass: process.env.SENDGRID_API_KEY as string, // your SendGrid API Key
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
 /**
- * Sends an email using the configured transporter.
+ * Sends an email using Gmail SMTP.
  *
- * @async
- * @function sendEmail
- * @param options - Email sending options.
- * @param options.to - Recipient email address.
- * @param options.subject - Subject of the email.
- * @param options.html - HTML body of the email.
- * @returns A promise that resolves with the result of the sending operation.
- * @throws {Error} If sending the email fails.
- *
- * @example
- * await sendEmail({
- *   to: "user@example.com",
- *   subject: "Recuperación de contraseña",
- *   html: "<p>Hola, haz clic en el enlace para restablecer tu contraseña</p>"
- * });
+ * @param options - Email details (recipient, subject, body HTML).
+ * @returns Promise that resolves if the email is sent successfully.
  */
 export async function sendEmail(options: IEmailOptions): Promise<any> {
   const { to, subject, html } = options;
@@ -50,10 +37,18 @@ export async function sendEmail(options: IEmailOptions): Promise<any> {
     throw new Error("EMAIL_USER no está configurado en las variables de entorno.");
   }
 
-  return transporter.sendMail({
-    from: process.env.EMAIL_USER, // verified sender in SendGrid
-    to,
-    subject,
-    html,
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: `"Soporte Movu" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    });
+
+    console.log("📧 Correo enviado correctamente:", info.messageId);
+    return info;
+  } catch (error: any) {
+    console.error("❌ Error al enviar correo:", error);
+    throw new Error("No se pudo enviar el correo. Verifica las credenciales SMTP.");
+  }
 }
