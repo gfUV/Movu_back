@@ -1,8 +1,8 @@
 services:
   - type: web
     name: movu-back
-    env: node
     plan: free
+    runtime: node
     buildCommand: npm install && npm run build
     startCommand: npm run start
     envVars:
@@ -12,16 +12,13 @@ services:
         value: 10000
       - key: MONGODB_URI
         value: ""
-        secure: true
+      - key: MONGO_URI
+        value: ""
       - key: EMAIL_HOST
         value: ""
-        secure: true
       - key: EMAIL_PORT
         value: ""
-        secure: true
       - key: EMAIL_USER
         value: ""
-        secure: true
       - key: EMAIL_PASS
         value: ""
-        secure: true
