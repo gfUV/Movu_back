@@ -17,6 +17,8 @@ export default class PasswordController {
       const { email } = req.body as { email: string };
 
       const user = (await UserDAO.findOne({ email })) as IUser | null;
+      console.log("Buscando usuario con correo:", email);
+      console.log("Resultado de búsqueda:", user);
       if (!user) {
         res.status(404).json({ message: "Usuario no encontrado" });
         return;
@@ -30,7 +32,7 @@ export default class PasswordController {
       await (user as any).save(); // ⚠️ cast si el DAO devuelve un documento Mongoose
 
       // Frontend URL - puedes cambiarla si usas otra
-      const resetUrl = `https://mp-1-et-3-g53-yumbo-front.vercel.app/resetPass_confirm.html?token=${token}`;
+      const resetUrl = `https://movu-theta.vercel.app/ConfirResetPage?token=${token}`;
 
       console.log("Enviando correo a:", user.email); // Debugging log
 
