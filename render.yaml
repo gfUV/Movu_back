@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: movu-backend
+    env: node
+    plan: free
+    buildCommand: "npm ci && npm run build"
+    startCommand: "node dist/server.js"
+    branch: master
+    pullRequestEnvironment: false
+    envVars:
+      - key: NODE_ENV
+        value: production

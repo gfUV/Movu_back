@@ -14,10 +14,27 @@ dotenv.config();
  */
 export const connectDB = async (): Promise<void> => {
   try {
-    const mongoUri: string = process.env.MONGO_URI;
+    // Read MONGO_URI from environment. Use a local fallback only for
+    // non-production environments. In production we fail fast to avoid
+    // accidentally using a local DB.
+    const envMongoUri: string | undefined = process.env.MONGO_URI;
+    const nodeEnv = process.env.NODE_ENV || "development";
 
-    if (!mongoUri) {
-      throw new Error("MONGO_URI is not defined in environment variables");
+    let mongoUri: string;
+    if (!envMongoUri) {
+      if (nodeEnv === "production") {
+        throw new Error("MONGO_URI must be defined in environment variables in production");
+      }
+
+      const fallback = "mongodb://127.0.0.1:27017/movu_back";
+      console.warn(
+        "⚠️  MONGO_URI is not defined. Using local fallback for development:",
+        fallback,
+      );
+      console.warn("Create a .env file or set MONGO_URI to connect to a remote DB (see .env.example)");
+      mongoUri = fallback;
+    } else {
+      mongoUri = envMongoUri;
     }
 
     await mongoose.connect(mongoUri, {
