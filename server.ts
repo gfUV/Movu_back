@@ -13,7 +13,11 @@ const app: Application = express();
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "*" }));
+app.use(cors({
+  origin: ["https://movu-theta.vercel.app"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 
 /**
  * Main API Routes

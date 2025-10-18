@@ -14,7 +14,7 @@ export default class PasswordController {
    */
   async requestReset(req: Request, res: Response): Promise<void> {
     try {
-      const { email } = req.body as { email: string };
+      const { email } = req.body;
 
       const user = (await UserDAO.findOne({ email })) as IUser | null;
       console.log("Buscando usuario con correo:", email);
@@ -37,7 +37,7 @@ export default class PasswordController {
       res.status(200).json({ message: "Correo de recuperación en proceso" });
       console.log("Enviando correo a:", user.email); // Debugging log
 
-      await sendEmail({
+      sendEmail({
         to: user.email,
         subject: "Recuperación de contraseña",
         html: `
@@ -46,11 +46,14 @@ export default class PasswordController {
           <a href="${resetUrl}">Restablecer contraseña</a>
           <p>Si no solicitaste este cambio, ignora este correo.</p>
         `,
-      });
+      })
+      .then(() => console.log("✅ Correo enviado correctamente a", user.email))
+      .catch((err) => console.error("❌ Error al enviar correo:", err));
 
-      res.json({ message: "Correo de recuperación enviado" });
     } catch (error: any) {
+         if (!res.headersSent) {
       res.status(500).json({ message: error.message });
+    }
     }
   }
 
