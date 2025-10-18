@@ -32,7 +32,7 @@ export default class PasswordController {
       await (user as any).save(); // ⚠️ cast si el DAO devuelve un documento Mongoose
 
       // Frontend URL - puedes cambiarla si usas otra
-      const resetUrl = `http://localhost:5173/ConfirResetPage?token=${token}`;
+      const resetUrl = `https://movu-theta.vercel.app/ConfirResetPage?token=${token}`;
 
       console.log("Enviando correo a:", user.email); // Debugging log
 
