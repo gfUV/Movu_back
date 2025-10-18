@@ -1,10 +1,10 @@
-import sgMail from "@sendgrid/mail";
+import { Resend } from "resend";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 /**
- * Interfaz para las opciones del correo
+ * Interface for the email sending options.
  */
 export interface IEmailOptions {
   to: string;
@@ -13,33 +13,50 @@ export interface IEmailOptions {
 }
 
 /**
- * Configurar SendGrid con la API Key
+ * Create the Resend client instance.
+ * Make sure RESEND_API_KEY and EMAIL_FROM are set in your environment.
  */
-sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
- * Función para enviar correos con SendGrid
+ * Sends an email using Resend API.
+ *
+ * @async
+ * @function sendEmail
+ * @param options - Email sending options.
+ * @returns A promise that resolves when the email is sent.
  */
-export async function sendEmail({ to, subject, html }: IEmailOptions) {
-  if (!process.env.SENDGRID_API_KEY || !process.env.EMAIL_USER) {
-    throw new Error(
-      "Faltan variables de entorno: SENDGRID_API_KEY o EMAIL_USER"
-    );
+export async function sendEmail(options: IEmailOptions): Promise<void> {
+  const { to, subject, html } = options;
+
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error("❌ Faltante: RESEND_API_KEY no está configurado en las variables de entorno.");
   }
 
-  const msg = {
-    to,
-    from: process.env.EMAIL_USER, // ⚠️ Debe ser un remitente verificado en SendGrid
-    subject,
-    html,
-  };
+  if (!process.env.EMAIL_FROM) {
+    throw new Error("❌ Faltante: EMAIL_FROM no está configurado en las variables de entorno.");
+  }
 
   try {
-    const response = await sgMail.send(msg);
-    console.log("✅ Correo enviado con éxito:", response[0].statusCode);
-    return response;
+    console.log("📧 Enviando correo con Resend...");
+    console.log("➡️ Para:", to);
+    console.log("➡️ Asunto:", subject);
+
+    const result = await resend.emails.send({
+      from: process.env.EMAIL_FROM,
+      to,
+      subject,
+      html,
+    });
+
+    if (result.error) {
+      console.error("❌ Error de Resend:", result.error);
+      throw new Error(result.error.message);
+    }
+
+    console.log("✅ Correo enviado exitosamente con ID:", result.data?.id);
   } catch (error: any) {
-    console.error("❌ Error al enviar correo:", error.response?.body || error.message);
-    throw new Error("Fallo al enviar correo: " + (error.message || "Error desconocido"));
+    console.error("❌ Fallo al enviar correo con Resend:", error.message);
+    throw new Error("Fallo al enviar correo: " + error.message);
   }
 }
