@@ -1,7 +1,9 @@
 import { Resend } from "resend";
 import dotenv from "dotenv";
 
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 /**
  * Interface for the email sending options.
@@ -11,16 +13,6 @@ export interface IEmailOptions {
   subject: string;
   html: string;
 }
-
-/**
- * Create the Resend client instance.
- * Make sure RESEND_API_KEY and EMAIL_FROM are set in your environment.
- */
-
-console.log("🧪 RESEND_API_KEY:", process.env.RESEND_API_KEY ? "CARGADA" : "NO DEFINIDA");
-console.log("🧪 EMAIL_FROM:", process.env.EMAIL_FROM || "NO DEFINIDA");
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
  * Sends an email using Resend API.
@@ -33,6 +25,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function sendEmail(options: IEmailOptions): Promise<void> {
   const { to, subject, html } = options;
 
+  // 🔍 Validar variables antes de crear la instancia
   if (!process.env.RESEND_API_KEY) {
     throw new Error("❌ Faltante: RESEND_API_KEY no está configurado en las variables de entorno.");
   }
@@ -41,10 +34,14 @@ export async function sendEmail(options: IEmailOptions): Promise<void> {
     throw new Error("❌ Faltante: EMAIL_FROM no está configurado en las variables de entorno.");
   }
 
+  // ✅ Crear la instancia dentro de la función
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   try {
     console.log("📧 Enviando correo con Resend...");
     console.log("➡️ Para:", to);
     console.log("➡️ Asunto:", subject);
+    console.log("➡️ Desde:", process.env.EMAIL_FROM);
 
     const result = await resend.emails.send({
       from: process.env.EMAIL_FROM,
