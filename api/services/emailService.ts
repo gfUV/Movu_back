@@ -38,16 +38,15 @@ const transporter: Transporter = nodemailer.createTransport({
  * @param options.html - HTML body of the email.
  * @returns A promise that resolves with the result of the sending operation.
  * @throws {Error} If sending the email fails.
- *
- * @example
- * await sendEmail({
- *   to: "user@example.com",
- *   subject: "Recuperación de contraseña",
- *   html: "<p>Hola, haz clic en el enlace para restablecer tu contraseña</p>"
- * });
  */
 export async function sendEmail(options: IEmailOptions): Promise<any> {
   const { to, subject, html } = options;
+
+  console.log("📩 Intentando enviar correo...");
+  console.log("➡️ Destinatario:", to);
+  console.log("📄 Asunto:", subject);
+  console.log("📧 Remitente configurado:", process.env.EMAIL_USER);
+  console.log("🔑 API Key configurada:", process.env.SENDGRID_API_KEY ? "✅ Sí" : "❌ No");
 
   if (!process.env.SENDGRID_API_KEY || !process.env.EMAIL_USER) {
     throw new Error("Faltan variables de entorno: SENDGRID_API_KEY o EMAIL_USER");
@@ -61,10 +60,21 @@ export async function sendEmail(options: IEmailOptions): Promise<any> {
       html,
     });
 
-    console.log("✅ Correo enviado con éxito:", info.messageId);
+    console.log("✅ Correo enviado con éxito:");
+    console.log("🆔 ID del mensaje:", info.messageId);
+    console.log("📬 Respuesta completa:", info);
+
+    // En algunos casos, SendGrid devuelve un estado "queued"
+    if (info.accepted && info.accepted.length > 0) {
+      console.log("📨 El correo fue aceptado por el servidor SMTP.");
+    } else {
+      console.warn("⚠️ El correo no fue aceptado por el servidor SMTP.");
+    }
+
     return info;
   } catch (error: any) {
     console.error("❌ Error al enviar correo:", error.message);
+    console.error("🧩 Detalles del error:", error);
     throw new Error("Fallo al enviar correo: " + error.message);
   }
 }
