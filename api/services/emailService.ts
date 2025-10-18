@@ -1,14 +1,18 @@
 import { Resend } from "resend";
 import dotenv from "dotenv";
 
-// Carga las variables solo en entorno local (Render ya las inyecta)
+// Load environment variables only in local environment (Render injects them automatically)
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
   console.log("🧩 Variables de entorno cargadas localmente con dotenv");
 }
 
 /**
- * Interface for the email sending options.
+ * Represents the required options to send an email.
+ * @interface IEmailOptions
+ * @property {string} to - The recipient's email address.
+ * @property {string} subject - The subject of the email.
+ * @property {string} html - The HTML content of the email body.
  */
 export interface IEmailOptions {
   to: string;
@@ -17,12 +21,21 @@ export interface IEmailOptions {
 }
 
 /**
- * Sends an email using Resend API.
+ * Sends an email using the Resend API.
+ *
+ * This function checks that the API key and sender address are properly configured.
+ * It then sends the email and logs the result or any error that occurs during the process.
+ *
+ * @async
+ * @function sendEmail
+ * @param {IEmailOptions} options - The options for the email (recipient, subject, and HTML content).
+ * @throws {Error} Throws an error if required environment variables are missing or if sending fails.
+ * @returns {Promise<void>} A promise that resolves when the email is sent successfully.
  */
 export async function sendEmail(options: IEmailOptions): Promise<void> {
   const { to, subject, html } = options;
 
-  // 🔍 Validar y mostrar (solo para debugging controlado)
+  // Validate and log (for controlled debugging)
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM;
 
@@ -36,7 +49,7 @@ export async function sendEmail(options: IEmailOptions): Promise<void> {
     throw new Error("Faltante: EMAIL_FROM no configurada");
   }
 
-  // ✅ Crear la instancia dentro de la función
+  // Create the Resend instance inside the function
   const resend = new Resend(apiKey);
 
   try {

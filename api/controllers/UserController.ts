@@ -3,31 +3,41 @@ import UserDAO from "../dao/UserDAO";
 import { IUser } from "../models/User";
 
 /**
- * UserController - Maneja las operaciones CRUD para usuarios.
- * Hereda los métodos genéricos de GlobalController.
+ * UserController - Handles CRUD operations for users.
+ * Inherits generic methods from GlobalController.
+ * @extends GlobalController<IUser>
  */
 class UserController extends GlobalController<IUser> {
+  /**
+   * Creates an instance of UserController.
+   */
   constructor() {
     super(UserDAO);
   }
 
   /**
-   * Crea un nuevo usuario verificando que el correo no esté registrado.
+   * Creates a new user after verifying the email is not already registered.
+   * 
+   * @async
+   * @function create
+   * @param {Object} req - Express request object containing the user data.
+   * @param {Object} res - Express response object used to send the response.
+   * @returns {Promise<void>} Sends a JSON response with a success or error message.
    */
   async create(req: any, res: any): Promise<void> {
     try {
       const { firstName, lastName, age, email, password } = req.body;
 
-      // Validación de campos obligatorios
+      // Validate required fields
       if (!firstName || !lastName || !age || !email || !password) {
         res.status(400).json({
           message:
-            "Todos los campos son obligatorios: firstName, lastName, age, email y password",
+            "Todos los campos son obligatorios: firstName, lastName, age, email y password.",
         });
         return;
       }
 
-      // Verificar si el correo ya está registrado
+      // Check if the email is already registered
       const existingUser = await (this.dao as any).findOne({ email });
       if (existingUser) {
         res.status(400).json({
@@ -36,13 +46,14 @@ class UserController extends GlobalController<IUser> {
         return;
       }
 
-      // Crear el nuevo usuario
+      // Create the new user
       const newUser = await this.dao.create(req.body);
       res.status(201).json({
-        message: "Usuario registrado correctamente",
+        message: "Usuario registrado correctamente.",
         user: newUser,
       });
     } catch (error: any) {
+      // Handle any errors during user creation
       res.status(400).json({
         message: `Error al registrar usuario: ${error.message}`,
       });

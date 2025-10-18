@@ -5,12 +5,24 @@ import { sendEmail } from "../services/emailService";
 import { IUser } from "../models/User";
 
 /**
- * Controlador para gestionar recuperación y restablecimiento de contraseñas.
+ * Controller responsible for handling password recovery and reset operations.
+ * 
+ * @class PasswordController
  */
 export default class PasswordController {
   /**
-   * Paso 1️⃣: Solicitud de recuperación de contraseña.
-   * Genera un token y envía un correo con el enlace de restablecimiento.
+   * 📩 Step 1: Handles password recovery requests.
+   * 
+   * - Generates a unique token valid for 1 hour.
+   * - Saves the token and expiration time in the user's record.
+   * - Sends a recovery email with the reset link to the user.
+   *
+   * @async
+   * @function requestReset
+   * @memberof PasswordController
+   * @param {Request} req - Express request object containing the user's email in the body.
+   * @param {Response} res - Express response object used to send the HTTP response.
+   * @returns {Promise<void>} Returns nothing. Sends a JSON response indicating success or failure.
    */
   async requestReset(req: Request, res: Response): Promise<void> {
     try {
@@ -64,8 +76,18 @@ export default class PasswordController {
   }
 
   /**
-   * Paso 2️⃣: Confirmación del restablecimiento.
-   * Cambia la contraseña del usuario si el token es válido.
+   * 🔑 Step 2: Handles password reset confirmation.
+   * 
+   * - Verifies that the reset token is valid and not expired.
+   * - Updates the user's password.
+   * - Clears the token and expiration fields from the user's record.
+   *
+   * @async
+   * @function resetPassword
+   * @memberof PasswordController
+   * @param {Request} req - Express request object containing the token and new password in the body.
+   * @param {Response} res - Express response object used to send the HTTP response.
+   * @returns {Promise<void>} Returns nothing. Sends a JSON response indicating success or failure.
    */
   async resetPassword(req: Request, res: Response): Promise<void> {
     try {
