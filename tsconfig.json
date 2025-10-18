@@ -11,5 +11,5 @@
     "types": ["node"],
     "moduleResolution": "node"
   },
-  "include": ["server.ts","api/**/*", "env.d.ts"]
+  "include": ["server.ts", "api/**/*", "env.d.ts"]
 }
