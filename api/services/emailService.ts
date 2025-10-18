@@ -16,6 +16,10 @@ export interface IEmailOptions {
  * Create the Resend client instance.
  * Make sure RESEND_API_KEY and EMAIL_FROM are set in your environment.
  */
+
+console.log("🧪 RESEND_API_KEY:", process.env.RESEND_API_KEY ? "CARGADA" : "NO DEFINIDA");
+console.log("🧪 EMAIL_FROM:", process.env.EMAIL_FROM || "NO DEFINIDA");
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
