@@ -13,7 +13,15 @@ const app: Application = express();
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "*" }));
+
+// Configure CORS: allow the frontend URL set in FRONTEND_URL (useful for Vercel)
+const frontendUrl = process.env.FRONTEND_URL || (process.env.NODE_ENV === 'production' ? undefined : '*');
+if (frontendUrl) {
+  app.use(cors({ origin: frontendUrl }));
+} else {
+  // If FRONTEND_URL is not set in production, fall back to a restrictive default
+  app.use(cors({ origin: ['https://movu-teal.vercel.app'] }));
+}
 
 /**
  * Main API Routes
