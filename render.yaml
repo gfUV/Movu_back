@@ -1,28 +1,27 @@
 services:
-  - name: movu-back
-    runtime: node
-    type: web_service
-    plan: free
+  - type: web
+    name: movu-back
     env: node
-    build_command: npm install && npm run build
-    start_command: npm run start
-    env_vars:
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
       - key: MONGODB_URI
         value: ""
-        scope: private
+        secure: true
       - key: EMAIL_HOST
         value: ""
-        scope: private
+        secure: true
       - key: EMAIL_PORT
         value: ""
-        scope: private
+        secure: true
       - key: EMAIL_USER
         value: ""
-        scope: private
+        secure: true
       - key: EMAIL_PASS
         value: ""
-        scope: private
+        secure: true
