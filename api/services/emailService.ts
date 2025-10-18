@@ -22,6 +22,7 @@ export interface IEmailOptions {
 export async function sendEmail(options: IEmailOptions): Promise<void> {
   const { to, subject, html } = options;
 
+  // 🔍 Validar y mostrar (solo para debugging controlado)
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM;
 
@@ -35,6 +36,7 @@ export async function sendEmail(options: IEmailOptions): Promise<void> {
     throw new Error("Faltante: EMAIL_FROM no configurada");
   }
 
+  // ✅ Crear la instancia dentro de la función
   const resend = new Resend(apiKey);
 
   try {
@@ -44,8 +46,8 @@ export async function sendEmail(options: IEmailOptions): Promise<void> {
     console.log("➡️ Asunto:", subject);
 
     const result = await resend.emails.send({
-      from, // 👈 obligatorio
-      to,   // 👈 usa el valor pasado a la función
+      from,
+      to,
       subject,
       html,
     });
@@ -61,10 +63,3 @@ export async function sendEmail(options: IEmailOptions): Promise<void> {
     throw new Error("Fallo al enviar correo: " + error.message);
   }
 }
-
-// ✅ Ejemplo de uso directo (para probar)
-sendEmail({
-  to: "alexandramoralesh1234@hotmail.com",
-  subject: "Prueba de Movu",
-  html: "<p>Hola, esta es una prueba de envío desde Movu 🚀</p>",
-});
