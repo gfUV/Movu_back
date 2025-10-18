@@ -1,4 +1,4 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application, Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import routes from "./api/routes/routes";
@@ -73,3 +73,13 @@ if (require.main === module) {
 }
 
 export default app;
+
+// Global error handler (ensure JSON responses for uncaught errors)
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('Unhandled error:', err);
+  if (process.env.NODE_ENV !== 'production') {
+    res.status(500).json({ error: err?.message || 'Internal Server Error', stack: err?.stack });
+  } else {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
