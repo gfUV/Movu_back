@@ -28,12 +28,13 @@ export default class PasswordController {
       const token = crypto.randomBytes(32).toString("hex");
       user.resetPasswordToken = token;
       user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
-
       await (user as any).save(); // ⚠️ cast si el DAO devuelve un documento Mongoose
 
       // Frontend URL - puedes cambiarla si usas otra
       const resetUrl = `https://movu-theta.vercel.app/ConfirResetPage?token=${token}`;
 
+      // 💬 Responder rápido al cliente
+      res.status(200).json({ message: "Correo de recuperación en proceso" });
       console.log("Enviando correo a:", user.email); // Debugging log
 
       await sendEmail({
