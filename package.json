@@ -1,12 +1,11 @@
 {
   "name": "movu_back",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only ./server.ts",
-    "build": "tsc",
-    "start": "node dist/dataBase.js",
+  "dev": "ts-node-dev --respawn --transpile-only ./server.ts",
+  "build": "tsc",
+  "start": "node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -27,5 +26,6 @@
     "express": "^5.1.0",
     "mongoose": "^8.19.1",
     "nodemailer": "^7.0.9"
-  }
+  },
+  "description": ""
 }
