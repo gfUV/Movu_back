@@ -28,6 +28,7 @@
     "express": "^5.1.0",
     "mongoose": "^8.19.1",
     "nodemailer": "^7.0.9",
+    "pexels": "^1.4.0",
     "resend": "^6.2.0"
   }
 }
