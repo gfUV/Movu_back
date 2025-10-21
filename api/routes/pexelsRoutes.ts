@@ -1,5 +1,5 @@
-import { Router, Request, Response } from "express";
-import { getPopularVideos } from "../controllers/PexelsController";
+import { Router } from "express";
+import { getPopularVideos, searchVideos } from "../controllers/PexelsController";
 
 /**
  * @module routes/pexelsRoutes
@@ -8,9 +8,16 @@ import { getPopularVideos } from "../controllers/PexelsController";
 const router = Router();
 
 /**
- * GET /api/pexels/videos/popular
+ * GET /api/v1/pexels/videos/popular
  * Returns a list of popular videos from Pexels (limited to 3 results).
  */
 router.get("/videos/popular", getPopularVideos);
+
+/**
+ * GET /api/v1/pexels/videos/search
+ * Searches videos on Pexels using a query parameter.
+ * Example: /api/v1/pexels/videos/search?query=nature&per_page=5
+ */
+router.get("/videos/search", searchVideos);
 
 export default router;

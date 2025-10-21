@@ -26,3 +26,31 @@ export const getPopularVideos = async (_req: Request, res: Response): Promise<vo
     res.status(500).json({ error: "Failed to fetch popular videos" });
   }
 };
+
+/**
+ * Searches videos from Pexels API using a query parameter.
+ * @function
+ * @async
+ * @param {Request} req - The HTTP request object containing the search query (req.query.query).
+ * @param {Response} res - The HTTP response object.
+ * @returns {Promise<void>} Responds with JSON containing search results or an error message.
+ */
+export const searchVideos = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const query = req.query.query as string;
+
+    if (!query) {
+      res.status(400).json({ error: "Missing 'query' parameter" });
+      return;
+    }
+
+    const per_page = Number(req.query.per_page) || 3;
+    const page = Number(req.query.page) || 1;
+
+    const data = await client.videos.search({ query, per_page, page });
+    res.json(data);
+  } catch (err) {
+    console.error("❌ Error searching Pexels videos:", err);
+    res.status(500).json({ error: "Failed to search Pexels videos" });
+  }
+};
