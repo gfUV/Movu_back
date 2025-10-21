@@ -4,7 +4,7 @@ declare namespace NodeJS {
     PEXELS_API_KEY: string;
     PORT: string;
     ORIGIN: string;
-    EMAIL_USER: string;
-    SENDGRID_API_KEY: string;
+    EMAIL_FROM: string;
+    RESEND_API_KEY: string;
   }
 }
