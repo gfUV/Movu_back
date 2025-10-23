@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 import cors from "cors";
 import routes from "./api/routes/routes";
 import { connectDB } from "./api/config/dataBase";
-import pexelsRoutes from "./api/routes/pexelsRoutes";
 
 dotenv.config();
 
@@ -31,8 +30,8 @@ connectDB();
 app.use(
   cors({
     origin: [
-      "https://movu-theta.vercel.app", // Frontend en producción (Vercel)
-      "http://localhost:5173",         // Frontend local
+      "https://movu-theta.vercel.app",
+      "http://localhost:5173"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
@@ -68,14 +67,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   }
   next();
 });
-
-/**
- * @section Pexels Routes
- * Registers the Pexels API endpoints under `/api/v1/pexels`.
- * Example: GET /api/v1/pexels/videos/popular
- */
-app.use("/api/v1/pexels", pexelsRoutes);
-
 
 /**
  * @section API Routes
