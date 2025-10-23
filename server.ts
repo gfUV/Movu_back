@@ -70,17 +70,19 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 /**
- * @section API Routes
- * Registers all main application routes under the `/api/v1` prefix.
- */
-app.use("/api/v1", routes);
-
-/**
  * @section Pexels Routes
  * Registers the Pexels API endpoints under `/api/v1/pexels`.
  * Example: GET /api/v1/pexels/videos/popular
  */
 app.use("/api/v1/pexels", pexelsRoutes);
+
+
+/**
+ * @section API Routes
+ * Registers all main application routes under the `/api/v1` prefix.
+ */
+app.use("/api/v1", routes);
+
 
 /**
  * @route GET /
