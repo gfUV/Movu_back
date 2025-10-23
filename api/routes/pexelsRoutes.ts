@@ -7,6 +7,8 @@ import { getPopularVideos, searchVideos } from "../controllers/PexelsController"
  */
 const router = Router();
 
+console.log("✅ Pexels routes loaded");
+
 /**
  * GET /api/v1/pexels/videos/popular
  * Returns a list of popular videos from Pexels (limited to 3 results).

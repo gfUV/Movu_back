@@ -29,11 +29,9 @@ connectDB();
 // 🔹 CORS primero
 app.use(
   cors({
-    origin: [
-      "https://movu-theta.vercel.app",
-      "http://localhost:5173"
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: ["https://movu-theta.vercel.app","http://localhost:5173"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
@@ -45,10 +43,7 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
 
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
-
+  if (req.method === "OPTIONS") return res.sendStatus(200);
   next();
 });
 
@@ -68,12 +63,13 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+console.log("✅ Routes loaded: /api/v1");
+
 /**
  * @section API Routes
  * Registers all main application routes under the `/api/v1` prefix.
  */
 app.use("/api/v1", routes);
-
 
 /**
  * @route GET /
