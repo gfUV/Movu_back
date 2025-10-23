@@ -31,7 +31,8 @@ connectDB();
 app.use(
   cors({
     origin: [
-      "https://movu-theta.vercel.app/", // Frontend en producción (Vercel)
+      "https://movu-theta.vercel.app", // Frontend en producción (Vercel)
+      "https://movu-theta.vercel.app/",
       "http://localhost:5173",         // Frontend local
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
