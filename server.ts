@@ -32,13 +32,26 @@ app.use(
   cors({
     origin: [
       "https://movu-theta.vercel.app", // Frontend en producción (Vercel)
-      "https://movu-theta.vercel.app/",
       "http://localhost:5173",         // Frontend local
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+
+// 🔹 Fijar manualmente encabezados CORS (Render a veces los ignora)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://movu-theta.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
 
 // 🔹 Luego parseadores de body (JSON y formularios)
 app.use(express.json());

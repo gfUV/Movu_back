@@ -18,6 +18,7 @@ import passwordRoutes from "./passwordRoutes";
  * - `/auth` → Password reset & authentication routes
  */
 
+
 const router: Router = Router();
 
 router.use("/users", userRoutes);
