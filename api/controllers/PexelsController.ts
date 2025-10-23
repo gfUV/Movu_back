@@ -19,7 +19,7 @@ const client = createClient(process.env.PEXELS_API_KEY as string);
  */
 export const getPopularVideos = async (_req: Request, res: Response): Promise<void> => {
   try {
-    const data = await client.videos.popular({ per_page: 3 });
+    const data = await client.videos.popular({ per_page: 6 });
     res.json(data);
   } catch (err) {
     console.error("❌ Error fetching Pexels videos:", err);
