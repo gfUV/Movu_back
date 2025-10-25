@@ -2,7 +2,10 @@ import { Router } from "express";
 import userRoutes from "./userRoutes";
 import sessionRoutes from "./sessionRoutes";
 import passwordRoutes from "./passwordRoutes";
-import pexelsRoutes from "./pexelsRoutes"; 
+import pexelsRoutes from "./pexelsRoutes";
+import favoriteRoutes from "./favoriteRoutes";
+
+
 
 /**
  * Main API router.
@@ -25,6 +28,7 @@ const router: Router = Router();
 router.use("/users", userRoutes);
 router.use("/sessions", sessionRoutes);
 router.use("/auth", passwordRoutes);
-router.use("/pexels", pexelsRoutes); 
+router.use("/pexels", pexelsRoutes);
+router.use("/favorites", favoriteRoutes);
 
 export default router;
