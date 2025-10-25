@@ -16,10 +16,11 @@ class FavoriteController extends GlobalController<IFavorite> {
 
   /**
    * Agrega un video a favoritos del usuario.
+   * Ahora también guarda videoData completo.
    */
   async addFavorite(req: Request, res: Response): Promise<void> {
     try {
-      const { userId, videoId } = req.body;
+      const { userId, videoId, videoData } = req.body;
       const existing = await FavoriteDAO.findByUserAndVideo(userId, videoId);
 
       if (existing) {
@@ -27,7 +28,13 @@ class FavoriteController extends GlobalController<IFavorite> {
         return;
       }
 
-      const favorite = await this.dao.create({ userId, videoId } as Partial<IFavorite>);
+      // Guardamos videoId y videoData completo
+      const favorite = await this.dao.create({
+        userId,
+        videoId,
+        videoData,
+      } as Partial<IFavorite>);
+
       res.status(201).json(favorite);
     } catch (error: any) {
       res.status(500).json({ message: `Error al agregar favorito: ${error.message}` });
@@ -41,7 +48,14 @@ class FavoriteController extends GlobalController<IFavorite> {
     try {
       const { userId } = req.params;
       const favorites = await FavoriteDAO.findByUser(userId);
-      res.status(200).json(favorites);
+
+      // Retornamos videoData completo para el frontend
+      const favoritesWithData = favorites.map((f) => ({
+        ...f.toObject(),
+        id: f.videoId,
+      }));
+
+      res.status(200).json(favoritesWithData);
     } catch (error: any) {
       res.status(500).json({ message: `Error al obtener favoritos: ${error.message}` });
     }

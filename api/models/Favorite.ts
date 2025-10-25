@@ -3,6 +3,7 @@ import mongoose, { Document } from "mongoose";
 export interface IFavorite extends Document {
   userId: mongoose.Types.ObjectId;
   videoId: string;
+  videoData: any; // Aquí guardamos toda la info del video
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,6 +18,10 @@ const favoriteSchema = new mongoose.Schema<IFavorite>(
     videoId: {
       type: String,
       required: true,
+    },
+    videoData: {
+      type: Object,
+      required: true, // Ahora siempre debe venir con la info del video
     },
   },
   { timestamps: true }
