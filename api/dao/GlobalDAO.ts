@@ -5,7 +5,7 @@ import { Model, Document, FilterQuery, UpdateQuery } from "mongoose";
  * Works with any Mongoose model passed to the constructor.
  */
 class GlobalDAO<T extends Document> {
-  private model: Model<T>;
+  protected model: Model<T>;
 
   /**
    * Creates an instance of GlobalDAO.

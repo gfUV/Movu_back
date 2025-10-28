@@ -63,6 +63,20 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+/**
+ * @section Static Subtitles Serving
+ * Serves subtitle (.vtt) files stored in the /api/subtitles directory.
+ * Accessible through URLs like: /subtitles/video1_es.vtt
+ */
+import path from "path";
+const subtitlesPath = path.resolve(
+  process.cwd(),
+  "api",
+  "subtitles"
+);
+app.use("/subtitles", express.static(subtitlesPath));
+console.log("🎬 Serving subtitles from:", subtitlesPath);
+
 console.log("✅ Routes loaded: /api/v1");
 
 /**

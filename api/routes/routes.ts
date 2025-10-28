@@ -4,6 +4,7 @@ import sessionRoutes from "./sessionRoutes";
 import passwordRoutes from "./passwordRoutes";
 import pexelsRoutes from "./pexelsRoutes";
 import favoriteRoutes from "./favoriteRoutes";
+import videoRoutes from "./videoRoutes";
 
 
 
@@ -30,5 +31,6 @@ router.use("/sessions", sessionRoutes);
 router.use("/auth", passwordRoutes);
 router.use("/pexels", pexelsRoutes);
 router.use("/favorites", favoriteRoutes);
+router.use("/videos", videoRoutes);
 
 export default router;
