@@ -3,10 +3,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import routes from "./api/routes/routes";
 import { connectDB } from "./api/config/dataBase";
+import path from "path";
 
 dotenv.config();
-
-const app: Application = express();
 
 /**
  * @file server.ts
@@ -15,6 +14,8 @@ const app: Application = express();
  * and mounts all API routes including Pexels integration.
  */
 
+const app: Application = express();
+
 /**
  * @section Database Connection
  * Establishes the connection to MongoDB using the custom connection utility.
@@ -22,23 +23,39 @@ const app: Application = express();
 connectDB();
 
 /**
- * @section Middleware Configuration
- * Configures CORS, body parsers, and diagnostic logging for incoming requests.
+ * @section CORS Configuration
+ * Configures CORS to allow requests from trusted origins.
+ * The allowed origins are defined in the ORIGIN environment variable (comma-separated).
  */
+const allowedOrigins = process.env.ORIGIN
+  ? process.env.ORIGIN.split(",").map((o) => o.trim())
+  : ["https://movu-theta.vercel.app"];
 
-// 🔹 CORS primero
 app.use(
   cors({
-    origin: ["https://movu-theta.vercel.app","http://localhost:5173"],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed from this origin"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
-// 🔹 Fijar manualmente encabezados CORS (Render a veces los ignora)
+/**
+ * @middleware CORS Header Fallback
+ * Some hosting services (e.g., Render) may ignore dynamic CORS headers.
+ * This ensures that valid origins are still explicitly allowed.
+ */
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://movu-theta.vercel.app");
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
@@ -47,14 +64,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// 🔹 Luego parseadores de body (JSON y formularios)
+/**
+ * @section Body Parsers
+ * Enables JSON and URL-encoded body parsing for incoming requests.
+ */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /**
  * @middleware Diagnostic Logger
- * Logs the body of all non-GET requests.
- * Useful for debugging on deployment platforms such as Render.
+ * Logs the request body for all non-GET requests.
+ * Useful for debugging in production environments.
  */
 app.use((req: Request, res: Response, next: NextFunction) => {
   if (req.method !== "GET") {
@@ -68,21 +88,15 @@ app.use((req: Request, res: Response, next: NextFunction) => {
  * Serves subtitle (.vtt) files stored in the /api/subtitles directory.
  * Accessible through URLs like: /subtitles/video1_es.vtt
  */
-import path from "path";
-const subtitlesPath = path.resolve(
-  process.cwd(),
-  "api",
-  "subtitles"
-);
+const subtitlesPath = path.resolve(process.cwd(), "api", "subtitles");
 app.use("/subtitles", express.static(subtitlesPath));
 console.log("🎬 Serving subtitles from:", subtitlesPath);
 
-console.log("✅ Routes loaded: /api/v1");
-
 /**
- * @section API Routes
+ * @section Routes
  * Registers all main application routes under the `/api/v1` prefix.
  */
+console.log("✅ Routes loaded: /api/v1");
 app.use("/api/v1", routes);
 
 /**
@@ -91,7 +105,7 @@ app.use("/api/v1", routes);
  * @returns {string} A success message in Spanish for user feedback.
  */
 app.get("/", (req: Request, res: Response) => {
-  res.send("✅ Server is running correctly");
+  res.send("✅ Servidor funcionando correctamente");
 });
 
 /**
@@ -102,7 +116,7 @@ app.get("/", (req: Request, res: Response) => {
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`🚀 Servidor ejecutándose en http://localhost:${PORT}`);
   });
 }
 
