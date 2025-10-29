@@ -5,6 +5,8 @@ import passwordRoutes from "./passwordRoutes";
 import pexelsRoutes from "./pexelsRoutes";
 import favoriteRoutes from "./favoriteRoutes";
 import videoRoutes from "./videoRoutes";
+import ratingRoutes from "./ratingRoutes";
+import commentRoutes from "./commentRoutes";
 
 
 
@@ -32,5 +34,7 @@ router.use("/auth", passwordRoutes);
 router.use("/pexels", pexelsRoutes);
 router.use("/favorites", favoriteRoutes);
 router.use("/videos", videoRoutes);
+router.use("/ratings", ratingRoutes);
+router.use("/comments", commentRoutes);
 
 export default router;
